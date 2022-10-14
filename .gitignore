@@ -37,3 +37,22 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# Presentations
+Presentation/Feynman_Tufte/*
+
+# Docs
+Analysis/NSMEtools/ResultsAndFigures/*
+
+# MEF data
+*.mef
+
+# Intermediate files
+Presentation/Figures/**/*.pdf
+Presentation/Figures/**/*.RData
+Presentation/Figures/**/*.RDdata
+
+# Any .RData file
+**.RData**
+
+
