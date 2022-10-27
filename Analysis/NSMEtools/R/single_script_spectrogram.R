@@ -1,3 +1,4 @@
+single_script_spectrogram <- function() {
 library(foreach)
 library(here)
 library(parallel)
@@ -106,4 +107,5 @@ j = 1
     # Theta result
     out_filename <- paste0( here(), '/', output_dir, '/', mef_fileroot, '_', iterationCount, '_', steps, '_', iterationCount, '_theta.RDdata' )
     save( thetaResult, file=out_filename )
+}
 
