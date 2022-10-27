@@ -1,3 +1,4 @@
+script_spectrogram <- function() {
 library(dplyr)
 library(docxtools)
 library(secret)
@@ -150,3 +151,4 @@ for (mef_file in mef_files) {
   }
 }
 
+}
