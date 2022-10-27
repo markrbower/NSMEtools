@@ -9,8 +9,8 @@ library(parallel)
 library(foreach)
 library(doParallel)
 
-filedir <- '/home/bm662/project/Data/Stim/Stim5/10.21.20/Test11b180uAmpLeftSide/2020-10-21_13-16-33/'
-mef_filedir = ( "/home/bm662/Documents/Concepts/NSMEtools/Analysis/NSMEtools/R/mef2/" )
+filedir <- '/home/bm662/project/Data/Stim/Stim5/10.29.20/Test16b140uAmpStimStage4/2020-10-29_16-33-36/'
+mef_filedir = ( "/home/bm662/Documents/Concepts/2022_07_01_NSMEtools/NSMEtools/Analysis/NSMEtools/R/mef2/" )
 
 # Initiate cluster
 no_cores <- 8
@@ -27,7 +27,7 @@ idiv_overlap <- function( start=1, stop=100, step=5, width=10 ) {
   windows <- sapply(1:length(starts),function(x) {starts[x] + 1:width - 1})
 }
 
-output_dir <-  "/home/bm662/Documents/Concepts/NSMEtools/Analysis/NSMEtools/ResultsAndFigures/"
+output_dir <-  "/home/bm662/Documents/Concepts/2022_07_01_NSMEtools/NSMEtools/Analysis/NSMEtools/ResultsAndFigures/"
 if ( !file.exists(output_dir) ) {
   dir.create(output_dir)
 }
