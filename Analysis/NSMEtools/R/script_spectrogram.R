@@ -1,15 +1,26 @@
 script_spectrogram <- function() {
+print('.')
 library(dplyr)
+print('..')
 library(docxtools)
+print('.')
 library(secret)
+print('...')
 library(here)
+print('.')
 library( multitaper )
+print('....')
 library(meftools)
+print('.')
 library(ggplot2)
+print('.....')
 library(parallel)
+print('.')
 library(foreach)
+print('......')
 library(doParallel)
 
+print('starting')
 filedir <- '/home/bm662/project/Data/Stim/Stim5/10.29.20/Test16b140uAmpStimStage4/2020-10-29_16-33-36/'
 mef_filedir = ( "/home/bm662/Documents/Concepts/2022_07_01_NSMEtools/NSMEtools/Analysis/NSMEtools/R/mef2/" )
 
@@ -73,6 +84,8 @@ for (mef_file in mef_files) {
     md <- mi$hasNext()
     mef_data <- mi$nextElem()
     print( length( mef_data ) )
+    dt <- attr( mef_data, 'dt' )
+    t0 <- attr( data, 't0' )
     windows <- idiv_overlap(start=1,stop=length(mef_data),step=stepSeconds*sps,width=widthSeconds*sps)
     M <- ncol(windows)
     tmp <- spec.mtm( ts( mef_data[windows[,1]], frequency = 32000 ), nw=4.0, k=7, jackknife = TRUE, plot=FALSE )
@@ -130,9 +143,9 @@ for (mef_file in mef_files) {
       } else {
         result <- FALSE
       }
-      #print( paste0( j, ": ", result ))
-      thetaResult$start[j] <- min(windows[,j])
-      thetaResult$stop[j] <- max(windows[,j])
+      print( paste0( j, ": ", result ))
+      thetaResult$start[j] <- t0 + dt * (min(windows[,j])-1)
+      thetaResult$stop[j] <- t0 + dt * (max(windows[,j])-1)
       thetaResult$valid[j] <- result
     }
     steps <- paste0( 'step_', stepSeconds, '_width_', widthSeconds )
