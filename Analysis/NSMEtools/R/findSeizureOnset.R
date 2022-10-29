@@ -5,9 +5,10 @@ findSeizureOnset <- function(subjectDateDir) {
   library(ggplot2)
   library(cowplot)
   
-  setwd(paste0('/Users/markrbower/Dropbox/Documents/Concepts/2022_07_01_NSMEtools/NSMEtools/Presentation/Figures/', subjectDateDir, '/b_stim') )
+  setwd(paste0('/Users/markrbower/Dropbox/Documents/Concepts/2022_07_01_NSMEtools/NSMEtools/Presentation/Figures/Stim5/', subjectDateDir, '/b_stim') )
   
   filenames <- list.files('.','spectrum')
+  outfilename <- "velocity_spectrogram_theta.pdf"
   # load a file to get the frequency information
   sumPower <- 0
   if ( length(filenames) > 0 ) {
@@ -68,9 +69,6 @@ findSeizureOnset <- function(subjectDateDir) {
     idx <- which( spectrum.f > 7.5 & spectrum.f < 8.5 )
     sumPowerTheta <- sapply(1:N,function(j) {sum(sumSpec[j,idx])})
     ratio <- sumPowerTheta / sumPowerMid
-    df <- data.frame(index=1:length(ratio),theta=sumPowerTheta,ratio=ratio)
-    p2 <- ggplot( df, aes(x=index,y=theta) ) + geom_line()
-    p3 <- ggplot( df, aes(x=index,y=ratio) ) + geom_line()
     
     # velocity
     fid <- file( './video_position_smoothed.txt', 'r' )
@@ -78,9 +76,21 @@ findSeizureOnset <- function(subjectDateDir) {
     x = as.numeric( strsplit(readLines(fid,1),",")[[1]] )
     y = as.numeric( strsplit(readLines(fid,1),",")[[1]] )
     close(fid)
+    dx <- diff(x)
+    dy <- diff(y)
+    v <- sqrt( dx*dx + dy*dy )
+    
+    df <- data.frame(index=1:length(ratio),theta=sumPowerTheta,ratio=ratio)
+    p2 <- ggplot( df, aes(x=index,y=theta) ) + geom_line()
+    p3 <- ggplot( df, aes(x=index,y=ratio) ) + geom_line()
+    
+    df <- data.frame(index=1:length(v), v=v)
+    p4 <- ggplot( df, aes(x=index,y=v) ) + geom_line()
 
-    p_out <- plot_grid(p1, p2, p3, align = "v", ncol = 1, axis="l", rel_heights = c(.4, .3, .3))
-    print(p_out)
+    p_out <- plot_grid(p4, p1, p2, p3, align = "v", ncol = 1, axis="l", rel_heights = c(.2, .4, .2, .2) )
+    # print(p_out)
+    setwd('..')
+    ggsave( outfilename )
     
   } else {
     print( paste0( "No files found in ", getwd() ) )

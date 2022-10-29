@@ -5,6 +5,8 @@ smoothedPosition  <- function() {
 # October 22, 2022
 # Yale
 library( stringr )
+library( tidyverse )
+library( zoo )
 
 fillFirstLast <- function(x) {
   idx <- which( !is.na(x) )
@@ -35,24 +37,28 @@ for ( dir in dirs ) {
   zx <- which( df$x == 0 )
   df$x[zx] <- NA
   df$x <- fillFirstLast( df$x )
-  df <- df %>%  mutate( x = na.approx(x), maxgap=Inf, na.rm=FALSE )
+  df <- df %>%  mutate( x = na.approx(x), maxgap=Inf, na.rm=FALSE, f=.5 )
   zy <- which( df$y == 0 )
   df$y[zy] <- NA
   df$y <- fillFirstLast( df$y )
-  df <- df %>%  mutate( y = na.approx(y), maxgap=Inf, na.rm=FALSE )
+  df <- df %>%  mutate( y = na.approx(y), maxgap=Inf, na.rm=FALSE, f=.5 )
   
   # Interpolate big differences
   dx <- diff(df$x)
   zx <- which( abs(dx) > 30 )
   df$x[zx+1] <- NA
   df$x <- fillFirstLast( df$x )
-  df <- df %>%  mutate( x = na.approx(x), maxgap=Inf, na.rm=FALSE )
+  df <- df %>%  mutate( x = na.approx(x), maxgap=Inf, na.rm=FALSE, f=.5 )
   dy <- diff(df$y)
   zy <- which( abs(dy) > 30 )
   df$y[zy+1] <- NA
   df$y <- fillFirstLast( df$y )
-  df <- df %>%  mutate( y = na.approx(y), maxgap=Inf, na.rm=FALSE )
-
+  df <- df %>%  mutate( y = na.approx(y), maxgap=Inf, na.rm=FALSE, f=.5 )
+  
+  # Smooth the values
+  df$x <- predict( loess( x~t, data=df, span=.001) )
+  df$y <- predict( loess( y~t, data=df, span=.001) )
+  
   # Save edited position file.
   sink( file=out_filename, type='output' )
   cat( paste0( df$t, collapse=',') )
